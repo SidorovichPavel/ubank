@@ -1,0 +1,3 @@
+[submodule "userver"]
+	path = userver
+	url = git@github.com:SidorovichPavel/userver.git
