@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
 project(ubank CXX)
 
+# Custom settings
+set(USERVER_FORCE_DOWNLOAD_PACKAGES ON CACHE BOOL "" FORCE)
+Set(USERVER_FEATURE_PATCH_LIBPQ OFF)
 # Enable userver libraries that are needed in this project
 set(USERVER_FEATURE_POSTGRESQL ON CACHE BOOL "" FORCE)
 
