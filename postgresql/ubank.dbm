@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="1.0.6" use-changelog="false" last-position="0,0" last-zoom="1" max-obj-count="4"
+<dbmodel pgmodeler-ver="1.0.6" use-changelog="false" last-position="0,212" last-zoom="1" max-obj-count="4"
 	 default-schema="public" default-owner="postgres"
 	 layers="Default layer"
 	 active-layers="0"
@@ -19,30 +19,30 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <schema name="ubank_db_1" layers="0" rect-visible="true" fill-color="#e1e1e1">
 </schema>
 
-<table name="client" layers="0" collapse-mode="2" max-obj-count="21" z-value="0">
+<table name="client" layers="0" collapse-mode="2" max-obj-count="31" z-value="0">
 	<schema name="ubank_db_1"/>
 	<role name="postgres"/>
-	<position x="700" y="180"/>
+	<position x="640" y="200"/>
 	<column name="id" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
-	<column name="firstname" not-null="true">
+	<column name="first_name" not-null="true">
 		<type name="varchar" length="0"/>
 	</column>
-	<column name="middlename">
+	<column name="middle_name" not-null="true">
 		<type name="varchar" length="0"/>
 	</column>
-	<column name="lastname" not-null="true">
-		<type name="smallint" length="0"/>
+	<column name="last_name" not-null="true">
+		<type name="varchar" length="0"/>
 	</column>
 	<column name="gender" not-null="true">
 		<type name="smallint" length="0"/>
 	</column>
 	<column name="passport_series" not-null="true">
-		<type name="char" length="2"/>
+		<type name="varchar" length="0"/>
 	</column>
 	<column name="passport_number" not-null="true">
-		<type name="integer" length="0"/>
+		<type name="varchar" length="0"/>
 	</column>
 	<column name="issuing" not-null="true">
 		<type name="varchar" length="0"/>
@@ -53,13 +53,13 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="id_number" not-null="true">
 		<type name="varchar" length="0"/>
 	</column>
-	<column name="birth_address">
+	<column name="birth_address" not-null="true">
 		<type name="varchar" length="0"/>
 	</column>
-	<column name="current_city">
+	<column name="current_city" not-null="true">
 		<type name="varchar" length="0"/>
 	</column>
-	<column name="current_address">
+	<column name="current_address" not-null="true">
 		<type name="varchar" length="0"/>
 	</column>
 	<column name="home_number">
@@ -68,14 +68,38 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="mobile_number">
 		<type name="varchar" length="0"/>
 	</column>
-	<column name="email" not-null="true">
-		<type name="varchar" length="0"/>
-	</column>
-	<column name="employer">
+	<column name="email">
 		<type name="varchar" length="0"/>
 	</column>
 	<column name="post">
 		<type name="varchar" length="0"/>
+	</column>
+	<column name="place_of_work">
+		<type name="varchar" length="0"/>
+	</column>
+	<column name="city_of_residence" not-null="true">
+		<type name="varchar" length="0"/>
+	</column>
+	<column name="residence_address" not-null="true">
+		<type name="varchar" length="0"/>
+	</column>
+	<column name="family_status" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="citizenship" not-null="true">
+		<type name="varchar" length="0"/>
+	</column>
+	<column name="disability">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="retiree" not-null="true">
+		<type name="bool" length="0"/>
+	</column>
+	<column name="monthly_income" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="conscription" not-null="true">
+		<type name="bool" length="0"/>
 	</column>
 	<constraint name="client_pk" type="pk-constr" table="ubank_db_1.client">
 		<columns names="id" ref-type="src-columns"/>
