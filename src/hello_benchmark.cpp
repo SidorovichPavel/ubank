@@ -14,8 +14,7 @@ void HelloBenchmark(benchmark::State& state) {
 
     for (auto _ : state) {
       const auto name = kNames[i++ % std::size(kNames)];
-      auto result = ubank::SayHelloTo(
-          name, ubank::UserType::kFirstTime);
+      auto result = ubank::SayHelloTo(name, ubank::UserType::kFirstTime);
       benchmark::DoNotOptimize(result);
     }
   });
