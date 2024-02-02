@@ -3,7 +3,7 @@
 #include <optional>
 #include <string>
 
-#include <userver/server/handlers/handler_base.hpp>
+#include <userver/formats/json.hpp>
 #include <userver/server/handlers/http_handler_json_base.hpp>
 #include <userver/utils/assert.hpp>
 
@@ -45,21 +45,26 @@ struct UserTable {
   bool conscription;
 };
 
-class HttpHandlerUser : public userver::server::handlers::HttpHandlerBase {
+class HttpHandlerUser : public userver::server::handlers::HttpHandlerJsonBase {
  public:
   static constexpr std::string_view kName = "handler-user";
 
   HttpHandlerUser(
       const userver::components::ComponentConfig& config,
       const userver::components::ComponentContext& component_context)
-      : HttpHandlerBase(config, component_context) {}
-
-  std::string HandleRequestThrow(
-      const userver::server::http::HttpRequest&,
+      : HttpHandlerJsonBase(config, component_context) {}
+  
+  userver::formats::json::Value HandleRequestJsonThrow(
+      const userver::server::http::HttpRequest& request, const userver::formats::json::Value& json,
       userver::server::request::RequestContext&) const override {
+    
+    userver::formats::json::ValueBuilder result;
+    result["status"] = 200;
 
-    return std::string("OK!\n");
+    return result.ExtractValue();
   }
+
+ private:
 };
 }  // namespace
 
