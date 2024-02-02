@@ -14,7 +14,7 @@ set(USERVER_FEATURE_REDIS_HI_MALLOC ON CACHE BOOL "" FORCE)
 
 
 # Adding userver dependency
-add_subdirectory(userver)
+add_subdirectory(third_party/userver)
 userver_setup_environment()
 
 
