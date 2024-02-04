@@ -15,7 +15,6 @@ int main(int argc, char* argv[]) {
                             .Append<userver::components::HttpClient>()
                             .Append<userver::server::handlers::TestsControl>();
 
-  ubank::AppendHello(component_list);
   ubank::AppendUser(component_list);
 
   return userver::utils::DaemonMain(argc, argv, component_list);
