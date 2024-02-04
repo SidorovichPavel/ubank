@@ -3,26 +3,25 @@
 CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="1.0.6" use-changelog="false" last-position="0,212" last-zoom="1" max-obj-count="4"
+<dbmodel pgmodeler-ver="1.0.6" use-changelog="false" last-position="0,0" last-zoom="1" max-obj-count="4"
 	 default-schema="public" default-owner="postgres"
 	 layers="Default layer"
 	 active-layers="0"
 	 layer-name-colors="#000000"
 	 layer-rect-colors="#b4b4b4"
 	 show-layer-names="false" show-layer-rects="false">
-<database name="ubankpgdb" is-template="false" allow-conns="true">
+<database name="ubank-db-1" is-template="false" allow-conns="true">
 </database>
 
 <schema name="public" layers="0" fill-color="#e1e1e1" sql-disabled="true">
 </schema>
 
-<schema name="ubank_db_1" layers="0" rect-visible="true" fill-color="#e1e1e1">
+<schema name="bank_schema" layers="0" rect-visible="true" fill-color="#e1e1e1">
 </schema>
 
-<table name="client" layers="0" collapse-mode="2" max-obj-count="31" z-value="0">
-	<schema name="ubank_db_1"/>
-	<role name="postgres"/>
-	<position x="640" y="200"/>
+<table name="clients" layers="0" collapse-mode="2" max-obj-count="31" z-value="0">
+	<schema name="bank_schema"/>
+	<position x="700" y="140"/>
 	<column name="id" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
@@ -101,7 +100,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="conscription" not-null="true">
 		<type name="bool" length="0"/>
 	</column>
-	<constraint name="client_pk" type="pk-constr" table="ubank_db_1.client">
+	<constraint name="client_pk" type="pk-constr" table="bank_schema.clients">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>

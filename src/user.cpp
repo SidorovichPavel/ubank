@@ -3,8 +3,12 @@
 #include <optional>
 #include <string>
 
+#include <userver/clients/dns/component.hpp>
+#include <userver/components/component.hpp>
 #include <userver/formats/json.hpp>
 #include <userver/server/handlers/http_handler_json_base.hpp>
+#include <userver/storages/postgres/cluster.hpp>
+#include <userver/storages/postgres/component.hpp>
 #include <userver/utils/assert.hpp>
 
 namespace ubank {
@@ -52,24 +56,32 @@ class HttpHandlerUser : public userver::server::handlers::HttpHandlerJsonBase {
   HttpHandlerUser(
       const userver::components::ComponentConfig& config,
       const userver::components::ComponentContext& component_context)
-      : HttpHandlerJsonBase(config, component_context) {}
-  
+      : HttpHandlerJsonBase(config, component_context),
+        pg_cluster_(
+            component_context
+                .FindComponent<userver::components::Postgres>("postgres-db-1")
+                .GetCluster()) {}
+
   userver::formats::json::Value HandleRequestJsonThrow(
-      const userver::server::http::HttpRequest& request, const userver::formats::json::Value& json,
+      const userver::server::http::HttpRequest& request,
+      const userver::formats::json::Value& json,
       userver::server::request::RequestContext&) const override {
-    
     userver::formats::json::ValueBuilder result;
     result["status"] = 200;
 
+    // request.GetHttpResponse().SetStatus(userver::server::http::HttpStatus::kBadRequest);
     return result.ExtractValue();
   }
 
  private:
+  userver::storages::postgres::ClusterPtr pg_cluster_;
 };
 }  // namespace
 
 void AppendUser(userver::components::ComponentList& component_list) {
   component_list.Append<HttpHandlerUser>();
+  component_list.Append<userver::components::Postgres>("postgres-db-1");
+  component_list.Append<userver::clients::dns::Component>();
 }
 
 }  // namespace ubank

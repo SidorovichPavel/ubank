@@ -53,3 +53,5 @@ CREATE TABLE bank_schema.clients (
 	CONSTRAINT client_pk PRIMARY KEY (id)
 );
 -- ddl-end --
+
+
