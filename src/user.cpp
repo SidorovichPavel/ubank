@@ -21,7 +21,7 @@ enum class FamilyStatus { Single, Married };
 
 enum class Disability { FirstGroup, SecondGroup, ThirdGroup };
 
-struct UserTable {
+struct UserInfo {
   std::string first_name;
   std::string middle_name;
   std::string last_name;
@@ -68,6 +68,22 @@ class HttpHandlerUser : public userver::server::handlers::HttpHandlerJsonBase {
       userver::server::request::RequestContext&) const override {
     userver::formats::json::ValueBuilder result;
     result["status"] = 200;
+
+    UserInfo user;
+    
+    pg_cluster_->Execute(
+        userver::storages::postgres::ClusterHostType::kMaster,
+        "INSERT INTO bank_schema.clients(first_name, "
+        "middle_name,last_name,gender,passport_series,passport_number, "
+        "issuing,issuing_date,id_number, "
+        "birth_address,current_city,current_address,city_of_residence, "
+        "residence_address,family_status,citizenship,retiree,monthly_income, "
+        "conscription) "
+        "VALUES('pavel','gennadevich','sidorovich',1,'KH','2462649',' "
+        "Волковысский РОВД','2014-01-01','id_number', "
+        "'birth_address','current_city','current_address','city_of_residence' "
+        ",'residence_address',0,'citizenship',false,100,false) "
+        "RETURNING id");
 
     // request.GetHttpResponse().SetStatus(userver::server::http::HttpStatus::kBadRequest);
     return result.ExtractValue();
