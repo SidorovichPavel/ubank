@@ -57,7 +57,7 @@ components_manager:
 
         #dev
         handler-user:
-            path: /user
+            path: /api/client
             method: POST
             task_processor: main-task-processor
 

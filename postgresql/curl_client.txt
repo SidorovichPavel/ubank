@@ -1,0 +1,4 @@
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"first_name":"pavel","middle_name":"genndevich","last_name":"sidorovich"}' \
+  http://localhost:8080/api/client

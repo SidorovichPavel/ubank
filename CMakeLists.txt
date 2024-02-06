@@ -17,11 +17,11 @@ set(USERVER_FEATURE_REDIS_HI_MALLOC ON CACHE BOOL "" FORCE)
 add_subdirectory(third_party/userver)   
 userver_setup_environment()
 
-add_library(${PROJECT_NAME}_user_objs OBJECT
-    src/user.hpp
-    src/user.cpp
+add_library(${PROJECT_NAME}_client_objs OBJECT
+    src/client.hpp
+    src/client.cpp
 )
-target_link_libraries(${PROJECT_NAME}_user_objs PUBLIC userver-postgresql)
+target_link_libraries(${PROJECT_NAME}_client_objs PUBLIC userver-postgresql)
 
 # Common sources
 #add_library(${PROJECT_NAME}_objs OBJECT

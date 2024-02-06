@@ -1,4 +1,4 @@
-#include "user.hpp"
+#include "client.hpp"
 
 #include <optional>
 #include <string>
@@ -15,13 +15,13 @@ namespace ubank {
 
 namespace {
 
-enum class Gender { Female, Man, Other };
+enum class Gender : std::int16_t { Female, Man, Other };
 
-enum class FamilyStatus { Single, Married };
+enum class FamilyStatus : std::int16_t { Single, Married };
 
-enum class Disability { FirstGroup, SecondGroup, ThirdGroup };
+enum class Disability : std::int16_t { FirstGroup, SecondGroup, ThirdGroup };
 
-struct UserInfo {
+struct ClientInfo {
   std::string first_name;
   std::string middle_name;
   std::string last_name;
@@ -69,21 +69,25 @@ class HttpHandlerUser : public userver::server::handlers::HttpHandlerJsonBase {
     userver::formats::json::ValueBuilder result;
     result["status"] = 200;
 
-    UserInfo user;
+    ClientInfo user;
+    user.first_name = json["first_name"].As<std::string>();
+    user.middle_name = json["middle_name"].As<std::string>();
+    user.last_name = json["last_name"].As<std::string>();
+    user.gender = json["gender"].As<Gender>();
     
-    pg_cluster_->Execute(
-        userver::storages::postgres::ClusterHostType::kMaster,
-        "INSERT INTO bank_schema.clients(first_name, "
-        "middle_name,last_name,gender,passport_series,passport_number, "
-        "issuing,issuing_date,id_number, "
-        "birth_address,current_city,current_address,city_of_residence, "
-        "residence_address,family_status,citizenship,retiree,monthly_income, "
-        "conscription) "
-        "VALUES('pavel','gennadevich','sidorovich',1,'KH','2462649',' "
-        "Волковысский РОВД','2014-01-01','id_number', "
-        "'birth_address','current_city','current_address','city_of_residence' "
-        ",'residence_address',0,'citizenship',false,100,false) "
-        "RETURNING id");
+    // pg_cluster_->Execute(
+    //     userver::storages::postgres::ClusterHostType::kMaster,
+    //     "INSERT INTO bank_schema.clients(first_name, "
+    //     "middle_name,last_name,gender,passport_series,passport_number, "
+    //     "issuing,issuing_date,id_number, "
+    //     "birth_address,current_city,current_address,home_number,city_of_residence, "
+    //     "residence_address,family_status,citizenship,retiree,monthly_income, "
+    //     "conscription) "
+    //     "VALUES('pavel','gennadevich','sidorovich',1,'KH','2462649',' "
+    //     "Волковысский РОВД','2014-01-01','id_number', "
+    //     "'birth_address','current_city','current_address',$1,'city_of_residence' "
+    //     ",'residence_address',0,'citizenship',false,100,false) "
+    //     "RETURNING id",user.otp_home_number);
 
     // request.GetHttpResponse().SetStatus(userver::server::http::HttpStatus::kBadRequest);
     return result.ExtractValue();
