@@ -73,7 +73,7 @@ class HttpHandlerUser : public userver::server::handlers::HttpHandlerJsonBase {
     user.first_name = json["first_name"].As<std::string>();
     user.middle_name = json["middle_name"].As<std::string>();
     user.last_name = json["last_name"].As<std::string>();
-    user.gender = json["gender"].As<Gender>();
+    //user.gender = json["gender"].As<Gender>();
     
     // pg_cluster_->Execute(
     //     userver::storages::postgres::ClusterHostType::kMaster,

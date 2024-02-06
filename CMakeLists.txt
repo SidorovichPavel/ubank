@@ -34,7 +34,7 @@ target_link_libraries(${PROJECT_NAME}_client_objs PUBLIC userver-postgresql)
 # The Service
 add_executable(${PROJECT_NAME} src/main.cpp)
 #target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs)
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_user_objs)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_client_objs)
 
 
 # Unit Tests
