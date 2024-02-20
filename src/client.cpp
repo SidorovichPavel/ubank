@@ -108,6 +108,7 @@ class HttpPutClient : public userver::server::handlers::HttpHandlerJsonBase {
 
 void AppendUser(userver::components::ComponentList& component_list) {
   component_list.Append<HttpPostClient>();
+  component_list.Append<HttpPutClient>();
   component_list.Append<userver::components::Postgres>("postgres-db-1");
   component_list.Append<userver::clients::dns::Component>();
 }
