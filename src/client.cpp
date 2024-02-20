@@ -22,7 +22,7 @@ namespace {
 
 class HttpPostClient : public userver::server::handlers::HttpHandlerJsonBase {
  public:
-  static constexpr std::string_view kName = "handler-client";
+  static constexpr std::string_view kName = "post-client";
 
   HttpPostClient(const userver::components::ComponentConfig& config,
                  const userver::components::ComponentContext& component_context)
@@ -80,6 +80,8 @@ class HttpPostClient : public userver::server::handlers::HttpHandlerJsonBase {
 
 class HttpPutClient : public userver::server::handlers::HttpHandlerJsonBase {
  public:
+  static constexpr std::string_view kName = "put-client";
+
   HttpPutClient(const userver::components::ComponentConfig& config,
                 const userver::components::ComponentContext& component_context)
       : userver::server::handlers::HttpHandlerJsonBase(config,
