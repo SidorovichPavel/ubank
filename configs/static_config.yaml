@@ -56,7 +56,7 @@ components_manager:
         #    task_processor: main-task-processor  # Run it on CPU bound task processor
 
         #dev
-        handler-user:
+        handler-client:
             path: /api/client
             method: POST
             task_processor: main-task-processor
