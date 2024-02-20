@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
 project(ubank CXX)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # Custom settings
 set(USERVER_FORCE_DOWNLOAD_PACKAGES ON CACHE BOOL "" FORCE)
 Set(USERVER_FEATURE_PATCH_LIBPQ OFF)
@@ -18,6 +21,8 @@ add_subdirectory(third_party/userver)
 userver_setup_environment()
 
 add_library(${PROJECT_NAME}_client_objs OBJECT
+    src/client_info.hpp
+    src/client_info.cpp
     src/client.hpp
     src/client.cpp
 )
