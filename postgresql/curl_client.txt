@@ -1,4 +1,27 @@
 curl --header "Content-Type: application/json" \
   --request POST \
-  --data '{"first_name":"pavel","middle_name":"genndevich","last_name":"sidorovich"}' \
+  --data '{
+  "client": {
+    "first_name": "pavel",
+    "middle_name": "genndevich",
+    "last_name": "sidorovich",
+    "gender": "Man",
+    "passport_series": "KH",
+    "passport_number": "2462649",
+    "issuing": "Волковысский РОВД",
+    "issuing_date": 1708421246,
+    "id_number": "id_number",
+    "birth_address": "birth_address",
+    "current_city": "current_city",
+    "current_address": "current_address",
+    "city_of_residence": "city_of_residence",
+    "residence_address": "residence_address",
+    "family_status": "Single",
+    "citizenship": "citizenship",
+    "disability": "None",
+    "retiree": false,
+    "monthly_income": 100,
+    "conscription": true
+    }
+  }' \
   http://localhost:8080/api/client
