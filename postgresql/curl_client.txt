@@ -5,7 +5,7 @@ curl --header "Content-Type: application/json" \
     "first_name": "pavel",
     "middle_name": "genndevich",
     "last_name": "sidorovich",
-    "gender": "Man",
+    "gender": "Male",
     "passport_series": "KH",
     "passport_number": "2462649",
     "issuing": "Волковысский РОВД",
