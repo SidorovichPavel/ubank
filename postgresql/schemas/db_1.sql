@@ -46,10 +46,14 @@ CREATE TABLE bank_schema.clients (
 	residence_address varchar NOT NULL,
 	family_status smallint NOT NULL,
 	citizenship varchar NOT NULL,
-	disability smallint,
+	disability smallint NOT NULL,
 	retiree bool NOT NULL,
 	monthly_income integer NOT NULL,
 	conscription bool NOT NULL,
-	CONSTRAINT client_pk PRIMARY KEY (id)
+	CONSTRAINT client_pk PRIMARY KEY (id),
+	CONSTRAINT unique_id_number UNIQUE (id_number),
+	CONSTRAINT unique_passport UNIQUE (passport_series,passport_number)
 );
 -- ddl-end --
+
+
