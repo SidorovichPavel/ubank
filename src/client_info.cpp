@@ -1,12 +1,16 @@
 #include "client_info.hpp"
 
+#include <userver/storages/postgres/database.hpp>
+#include <userver/storages/postgres/io/date.hpp>
+#include <userver/utils/datetime/date.hpp>
+
 namespace ubank {
 enum class Gender : std::int16_t { Man, Female, Other };
 
 constexpr userver::utils::TrivialBiMap kGenderEnumDescription =
     [](auto selector) {
       return selector()
-          .Case("Man", Gender::Man)
+          .Case("Male", Gender::Man)
           .Case("Female", Gender::Female)
           .Case("Other", Gender::Other);
     };
@@ -131,11 +135,70 @@ ClientInfo Deserialize(const userver::formats::json::Value& json) {
 
       .citizenship = json["citizenship"].As<std::string>(),
 
-      .disability = get_mapped_field_data(json, "disability",
-                                          kDisabilityEnumDescription),
+      .disability =
+          get_mapped_field_data(json, "disability", kDisabilityEnumDescription),
 
       .retiree = json["retiree"].As<bool>(),
       .monthly_income = json["monthly_income"].As<int>(),
       .conscription = json["conscription"].As<bool>()};
 }
+
+ClientInfo Deserialize(const userver::storages::postgres::Row& row) {
+  std::optional<std::string> opt_home_number;
+  if (!row["home_number"].IsNull())
+    opt_home_number =
+        std::make_optional<std::string>(row["home_number"].As<std::string>());
+
+  std::optional<std::string> opt_mobile_number;
+  if (!row["mobile_number"].IsNull())
+    opt_mobile_number =
+        std::make_optional<std::string>(row["mobile_number"].As<std::string>());
+
+  std::optional<std::string> opt_email;
+  if (!row["email"].IsNull())
+    opt_email = std::make_optional<std::string>(row["email"].As<std::string>());
+
+  std::optional<std::string> opt_position;
+  if (!row["post"].IsNull())
+    opt_position =
+        std::make_optional<std::string>(row["post"].As<std::string>());
+
+  std::optional<std::string> opt_place_of_work;
+  if (!row["place_of_work"].IsNull())
+    opt_place_of_work =
+        std::make_optional<std::string>(row["place_of_work"].As<std::string>());
+
+  return ClientInfo{
+      row["first_name"].As<std::string>(),
+      row["middle_name"].As<std::string>(),
+      row["last_name"].As<std::string>(),
+
+      static_cast<Gender>(row["gender"].As<std::int16_t>()),
+
+      row["passport_series"].As<std::string>(),
+      row["passport_number"].As<std::string>(),
+      row["issuing"].As<std::string>(),
+      row["issuing_date"].As<userver::utils::datetime::Date>().GetSysDays(),
+      row["id_number"].As<std::string>(),
+
+      row["birth_address"].As<std::string>(),
+      row["current_city"].As<std::string>(),
+      row["current_address"].As<std::string>(),
+
+      std::move(opt_home_number),
+      std::move(opt_mobile_number),
+      std::move(opt_email),
+      std::move(opt_position),
+      std::move(opt_place_of_work),
+
+      row["city_of_residence"].As<std::string>(),
+      row["residence_address"].As<std::string>(),
+      static_cast<FamilyStatus>(row["family_status"].As<std::int16_t>()),
+      row["citizenship"].As<std::string>(),
+      static_cast<Disability>(row["disability"].As<std::int16_t>()),
+      row["retiree"].As<bool>(),
+      row["monthly_income"].As<int>(),
+      row["conscription"].As<bool>()};
+}
+
 }  // namespace ubank

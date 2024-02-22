@@ -7,6 +7,7 @@
 
 #include <userver/formats/json.hpp>
 #include <userver/storages/postgres/database.hpp>
+#include <userver/storages/postgres/cluster.hpp>
 #include <userver/utils/trivial_map.hpp>
 
 namespace ubank {
@@ -50,5 +51,6 @@ userver::formats::json::Value Serialize(
     userver::formats::serialize::To<userver::formats::json::Value>);
 
 ClientInfo Deserialize(const userver::formats::json::Value& json);
+ClientInfo Deserialize(const userver::storages::postgres::Row& row);
 
 }  // namespace ubank
