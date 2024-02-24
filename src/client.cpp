@@ -8,7 +8,6 @@
 #include <string>
 #include <string_view>
 
-#include <userver/clients/dns/component.hpp>
 #include <userver/components/component.hpp>
 #include <userver/formats/json.hpp>
 #include <userver/server/handlers/http_handler_json_base.hpp>
@@ -228,13 +227,11 @@ class HttpGetSingleClient
 
 }  // namespace
 
-void AppendUser(userver::components::ComponentList& component_list) {
+void AppendClient(userver::components::ComponentList& component_list) {
   component_list.Append<HttpPostClient>();
   component_list.Append<HttpPutClient>();
   component_list.Append<HttpGetClient>();
   component_list.Append<HttpGetSingleClient>();
-  component_list.Append<userver::components::Postgres>("postgres-db-1");
-  component_list.Append<userver::clients::dns::Component>();
 }
 
 }  // namespace ubank
