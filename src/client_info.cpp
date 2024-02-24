@@ -145,7 +145,7 @@ ClientInfo Deserialize(const userver::formats::json::Value& json) {
 ClientInfo Deserialize(const userver::storages::postgres::Row& row) {
   auto optional_field =
       [&](const std::string& key) -> std::optional<std::string> {
-    if (row[key].IsNull())
+    if (!row[key].IsNull())
       return std::make_optional<std::string>(row[key].As<std::string>());
     else
       return std::nullopt;
