@@ -5,6 +5,9 @@
 #include <userver/testsuite/testsuite_support.hpp>
 #include <userver/utils/daemon_run.hpp>
 
+#include <userver/clients/dns/component.hpp>
+#include <userver/storages/postgres/component.hpp>
+
 #include "client.hpp"
 
 int main(int argc, char* argv[]) {
@@ -14,7 +17,10 @@ int main(int argc, char* argv[]) {
                             .Append<userver::components::HttpClient>()
                             .Append<userver::server::handlers::TestsControl>();
 
-  ubank::AppendUser(component_list);
+  component_list.Append<userver::clients::dns::Component>()
+      .Append<userver::components::Postgres>("postgres-db-1");
+
+  ubank::AppendClient(component_list);
 
   return userver::utils::DaemonMain(argc, argv, component_list);
 }
