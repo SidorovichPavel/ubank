@@ -144,29 +144,13 @@ ClientInfo Deserialize(const userver::formats::json::Value& json) {
 }
 
 ClientInfo Deserialize(const userver::storages::postgres::Row& row) {
-  std::optional<std::string> opt_home_number;
-  if (!row["home_number"].IsNull())
-    opt_home_number =
-        std::make_optional<std::string>(row["home_number"].As<std::string>());
-
-  std::optional<std::string> opt_mobile_number;
-  if (!row["mobile_number"].IsNull())
-    opt_mobile_number =
-        std::make_optional<std::string>(row["mobile_number"].As<std::string>());
-
-  std::optional<std::string> opt_email;
-  if (!row["email"].IsNull())
-    opt_email = std::make_optional<std::string>(row["email"].As<std::string>());
-
-  std::optional<std::string> opt_position;
-  if (!row["post"].IsNull())
-    opt_position =
-        std::make_optional<std::string>(row["post"].As<std::string>());
-
-  std::optional<std::string> opt_place_of_work;
-  if (!row["place_of_work"].IsNull())
-    opt_place_of_work =
-        std::make_optional<std::string>(row["place_of_work"].As<std::string>());
+  auto optional_field =
+      [&](const std::string& key) -> std::optional<std::string> {
+    if (row[key].IsNull())
+      return std::make_optional<std::string>(row[key].As<std::string>());
+    else
+      return std::nullopt;
+  };
 
   return ClientInfo{
       row["first_name"].As<std::string>(),
@@ -185,11 +169,11 @@ ClientInfo Deserialize(const userver::storages::postgres::Row& row) {
       row["current_city"].As<std::string>(),
       row["current_address"].As<std::string>(),
 
-      std::move(opt_home_number),
-      std::move(opt_mobile_number),
-      std::move(opt_email),
-      std::move(opt_position),
-      std::move(opt_place_of_work),
+      optional_field("home_number"),
+      optional_field("mobile_number"),
+      optional_field("email"),
+      optional_field("post"),
+      optional_field("place_of_work"),
 
       row["city_of_residence"].As<std::string>(),
       row["residence_address"].As<std::string>(),
