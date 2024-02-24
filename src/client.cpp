@@ -170,7 +170,7 @@ class HttpGetClient : public userver::server::handlers::HttpHandlerJsonBase {
 
   userver::formats::json::Value GetAllClients() const {
     auto pg_result = pg_cluster_->Execute(
-        userver::storages::postgres::ClusterHostType::kSlave,
+        userver::storages::postgres::ClusterHostType::kMaster,
         "SELECT (id) FROM bank_schema.clients");
 
     userver::formats::json::ValueBuilder json_builder;
@@ -210,7 +210,7 @@ class HttpGetSingleClient
       throw std::runtime_error("parse error. value of id is invalid");
 
     auto pg_result = pg_cluster_->Execute(
-        userver::storages::postgres::ClusterHostType::kSlave,
+        userver::storages::postgres::ClusterHostType::kMaster,
         "SELECT * FROM bank_schema.clients WHERE id = $1", id);
 
     userver::formats::json::ValueBuilder json_builder;
