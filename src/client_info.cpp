@@ -5,12 +5,12 @@
 #include <userver/utils/datetime/date.hpp>
 
 namespace ubank {
-enum class Gender : std::int16_t { Man, Female, Other };
+enum class Gender : std::int16_t { Male, Female, Other };
 
 constexpr userver::utils::TrivialBiMap kGenderEnumDescription =
     [](auto selector) {
       return selector()
-          .Case("Male", Gender::Man)
+          .Case("Male", Gender::Male)
           .Case("Female", Gender::Female)
           .Case("Other", Gender::Other);
     };
@@ -103,44 +103,43 @@ auto get_mapped_field_data(const userver::formats::json::Value& json,
 
 ClientInfo Deserialize(const userver::formats::json::Value& json) {
   return ClientInfo{
-      .first_name = json["first_name"].As<std::string>(),
-      .middle_name = json["middle_name"].As<std::string>(),
-      .last_name = json["last_name"].As<std::string>(),
+      json["first_name"].As<std::string>(),
+      json["middle_name"].As<std::string>(),
+      json["last_name"].As<std::string>(),
 
-      .gender = get_mapped_field_data(json, "gender", kGenderEnumDescription),
+      get_mapped_field_data(json, "gender", kGenderEnumDescription),
 
-      .passport_series = json["passport_series"].As<std::string>(),
-      .passport_number = json["passport_number"].As<std::string>(),
-      .issuing = json["issuing"].As<std::string>(),
+      json["passport_series"].As<std::string>(),
+      json["passport_number"].As<std::string>(),
+      json["issuing"].As<std::string>(),
 
-      .issuing_date = std::chrono::system_clock::from_time_t(
+      std::chrono::system_clock::from_time_t(
           static_cast<std::time_t>(json["issuing_date"].As<std::int64_t>())),
 
-      .id_number = json["id_number"].As<std::string>(),
-      .birth_address = json["birth_address"].As<std::string>(),
-      .current_city = json["current_city"].As<std::string>(),
-      .current_address = json["current_address"].As<std::string>(),
+      json["id_number"].As<std::string>(),
+      json["birth_address"].As<std::string>(),
+      json["current_city"].As<std::string>(),
+      json["current_address"].As<std::string>(),
 
-      .otp_home_number = json_as_optional<std::string>(json, "home_number"),
-      .opt_mobile_number = json_as_optional<std::string>(json, "mobile_number"),
-      .opt_email = json_as_optional<std::string>(json, "email"),
-      .opt_position = json_as_optional<std::string>(json, "position"),
-      .opt_place_of_work = json_as_optional<std::string>(json, "place_of_work"),
+      json_as_optional<std::string>(json, "home_number"),
+      json_as_optional<std::string>(json, "mobile_number"),
+      json_as_optional<std::string>(json, "email"),
+      json_as_optional<std::string>(json, "position"),
+      json_as_optional<std::string>(json, "place_of_work"),
 
-      .city_of_residence = json["city_of_residence"].As<std::string>(),
-      .residence_address = json["residence_address"].As<std::string>(),
+      json["city_of_residence"].As<std::string>(),
+      json["residence_address"].As<std::string>(),
 
-      .family_status = get_mapped_field_data(json, "family_status",
-                                             kFamilyStatusEnumDescription),
+      get_mapped_field_data(json, "family_status",
+                            kFamilyStatusEnumDescription),
 
-      .citizenship = json["citizenship"].As<std::string>(),
+      json["citizenship"].As<std::string>(),
 
-      .disability =
-          get_mapped_field_data(json, "disability", kDisabilityEnumDescription),
+      get_mapped_field_data(json, "disability", kDisabilityEnumDescription),
 
-      .retiree = json["retiree"].As<bool>(),
-      .monthly_income = json["monthly_income"].As<int>(),
-      .conscription = json["conscription"].As<bool>()};
+      json["retiree"].As<bool>(),
+      json["monthly_income"].As<int>(),
+      json["conscription"].As<bool>()};
 }
 
 ClientInfo Deserialize(const userver::storages::postgres::Row& row) {
