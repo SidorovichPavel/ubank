@@ -28,6 +28,14 @@ add_library(${PROJECT_NAME}_client_objs OBJECT
 )
 target_link_libraries(${PROJECT_NAME}_client_objs PUBLIC userver-postgresql)
 
+add_library(${PROJECT_NAME}_deposit_objs OBJECT
+    src/deposit.hpp
+    src/deposit.cpp
+    src/deposit_info.hpp
+    src/deposit_info.cpp
+)
+target_link_libraries(${PROJECT_NAME}_deposit_objs PUBLIC userver-postgresql)
+
 # Common sources
 #add_library(${PROJECT_NAME}_objs OBJECT
 #    src/hello.hpp
@@ -40,7 +48,7 @@ target_link_libraries(${PROJECT_NAME}_client_objs PUBLIC userver-postgresql)
 add_executable(${PROJECT_NAME} src/main.cpp)
 #target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_client_objs)
-
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_deposit_objs)
 
 # Unit Tests
 add_executable(${PROJECT_NAME}_unittest
