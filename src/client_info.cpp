@@ -1,8 +1,13 @@
 #include "client_info.hpp"
 
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+
 #include <userver/storages/postgres/database.hpp>
 #include <userver/storages/postgres/io/date.hpp>
+#include <userver/storages/postgres/io/uuid.hpp>
 #include <userver/utils/datetime/date.hpp>
+#include <userver/formats/json/serialize.hpp>
 
 namespace ubank {
 enum class Gender : std::int16_t { Male, Female, Other };
@@ -44,6 +49,7 @@ userver::formats::json::Value Serialize(
     const ClientInfo& info,
     userver::formats::serialize::To<userver::formats::json::Value>) {
   userver::formats::json::ValueBuilder builder;
+  builder["id"] = boost::uuids::to_string(info.id);
   builder["first_name"] = info.first_name;
   builder["middle_name"] = info.middle_name;
   builder["last_name"] = info.last_name;
@@ -79,15 +85,6 @@ userver::formats::json::Value Serialize(
   return builder.ExtractValue();
 }
 
-template <typename T>
-std::optional<T> json_as_optional(const userver::formats::json::Value& json,
-                                  std::string_view key) {
-  if (json.HasMember(key))
-    return std::make_optional(json[key].As<T>());
-  else
-    return std::nullopt;
-}
-
 template <typename Mapper>
 auto get_mapped_field_data(const userver::formats::json::Value& json,
                            std::string_view key, const Mapper& mapper) {
@@ -103,6 +100,7 @@ auto get_mapped_field_data(const userver::formats::json::Value& json,
 
 ClientInfo Deserialize(const userver::formats::json::Value& json) {
   return ClientInfo{
+      boost::uuids::nil_generator{}(),
       json["first_name"].As<std::string>(),
       json["middle_name"].As<std::string>(),
       json["last_name"].As<std::string>(),
@@ -121,11 +119,11 @@ ClientInfo Deserialize(const userver::formats::json::Value& json) {
       json["current_city"].As<std::string>(),
       json["current_address"].As<std::string>(),
 
-      json_as_optional<std::string>(json, "home_number"),
-      json_as_optional<std::string>(json, "mobile_number"),
-      json_as_optional<std::string>(json, "email"),
-      json_as_optional<std::string>(json, "position"),
-      json_as_optional<std::string>(json, "place_of_work"),
+      json["home_number"].As<std::optional<std::string>>(),
+      json["mobile_number"].As<std::optional<std::string>>(),
+      json["email"].As<std::optional<std::string>>(),
+      json["position"].As<std::optional<std::string>>(),
+      json["place_of_work"].As<std::optional<std::string>>(),
 
       json["city_of_residence"].As<std::string>(),
       json["residence_address"].As<std::string>(),
@@ -143,15 +141,9 @@ ClientInfo Deserialize(const userver::formats::json::Value& json) {
 }
 
 ClientInfo Deserialize(const userver::storages::postgres::Row& row) {
-  auto optional_field =
-      [&](const std::string& key) -> std::optional<std::string> {
-    if (!row[key].IsNull())
-      return std::make_optional<std::string>(row[key].As<std::string>());
-    else
-      return std::nullopt;
-  };
 
   return ClientInfo{
+      row["id"].As<boost::uuids::uuid>(),
       row["first_name"].As<std::string>(),
       row["middle_name"].As<std::string>(),
       row["last_name"].As<std::string>(),
@@ -168,11 +160,11 @@ ClientInfo Deserialize(const userver::storages::postgres::Row& row) {
       row["current_city"].As<std::string>(),
       row["current_address"].As<std::string>(),
 
-      optional_field("home_number"),
-      optional_field("mobile_number"),
-      optional_field("email"),
-      optional_field("post"),
-      optional_field("place_of_work"),
+      row["home_number"].As<std::optional<std::string>>(),
+      row["mobile_number"].As<std::optional<std::string>>(),
+      row["email"].As<std::optional<std::string>>(),
+      row["post"].As<std::optional<std::string>>(),
+      row["place_of_work"].As<std::optional<std::string>>(),
 
       row["city_of_residence"].As<std::string>(),
       row["residence_address"].As<std::string>(),

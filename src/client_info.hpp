@@ -5,6 +5,8 @@
 #include <optional>
 #include <string>
 
+#include <boost/uuid/uuid.hpp>
+
 #include <userver/formats/json.hpp>
 #include <userver/storages/postgres/database.hpp>
 #include <userver/storages/postgres/cluster.hpp>
@@ -19,6 +21,7 @@ enum class FamilyStatus : std::int16_t;
 enum class Disability : std::int16_t;
 
 struct ClientInfo {
+  boost::uuids::uuid id;
   std::string first_name;
   std::string middle_name;
   std::string last_name;
