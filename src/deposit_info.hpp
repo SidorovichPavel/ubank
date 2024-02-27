@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <optional>
 #include <string>
 
@@ -9,31 +10,53 @@
 
 namespace ubank {
 
-enum class Currency : std::int16_t;
-
-struct DepositInfo {
+struct Deposit {
   boost::uuids::uuid id;         // string
-  std::string type;              // maybe will change to enum
-  std::string agreement_number;  // maybe will change to int
-  Currency currency;
-  userver::utils::datetime::Date begin;
-  userver::utils::datetime::Date end;
+  std::string category;          // maybe will change to enum
+  std::string agreement_number;  // maybe will change to intka
+  userver::utils::datetime::Date program_begin;
+  userver::utils::datetime::Date program_end;
   userver::utils::datetime::Date agreement_begin;
   userver::utils::datetime::Date agreement_end;
   std::int64_t amount;
   std::int16_t interest;
-  std::int32_t client_id;  // will be changed to string/uuid
+  boost::uuids::uuid id_main_accounts;
+  boost::uuids::uuid id_sec_accounts;
+  boost::uuids::uuid id_clients;  // will be changed to string/uuid
 };
 
+userver::formats::json::Value Serialize(
+    const Deposit& deposit,
+    userver::formats::serialize::To<userver::formats::json::Value>);
+
+Deposit Deserialize(const userver::formats::json::Value& json);
+
 struct Account {
-  std::int64_t number;   // maybe need custom type?
-  std::int16_t code;     // maybe need enum
-  std::string activity;  // maybe need enum
+  boost::uuids::uuid id;   // string
+  std::int64_t id_number;  // maybe need custom type?
+  std::int16_t code;       // maybe need enum
+  std::string activity;    // maybe need enum
   std::int64_t debit;
   std::int64_t credit;
   std::int64_t balance;
-  std::optional<std::string> name;
-  boost::uuids::uuid deposit_id;
+  std::optional<std::string> note;
+  boost::uuids::uuid id_deposits;
 };
+
+userver::formats::json::Value Serialize(
+    const Account& account,
+    userver::formats::serialize::To<userver::formats::json::Value>);
+
+struct Transaction {
+  boost::uuids::uuid id;
+  boost::uuids::uuid src_account;
+  boost::uuids::uuid dst_account;
+  std::int64_t amount;
+  userver::utils::datetime::Date txn_date;
+};
+
+userver::formats::json::Value Serialize(
+    const Transaction& tnx,
+    userver::formats::serialize::To<userver::formats::json::Value>);
 
 }  // namespace ubank

@@ -3,7 +3,8 @@
 CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="1.0.6" use-changelog="false" last-position="0,0" last-zoom="1" max-obj-count="4"
+<dbmodel pgmodeler-ver="1.1.0" use-changelog="false" max-obj-count="4"
+	 last-position="0,0" last-zoom="1" scene-rect="0,0,1680.2,1076.8"
 	 default-schema="public" default-owner="postgres"
 	 layers="Default layer"
 	 active-layers="0"
@@ -13,17 +14,17 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <database name="ubank-db-1" is-template="false" allow-conns="true">
 </database>
 
-<schema name="public" layers="0" fill-color="#e1e1e1" sql-disabled="true">
+<schema name="public" layers="0" fill-color="#e1e1e1" name-color="#000000" sql-disabled="true">
 </schema>
 
-<schema name="bank_schema" layers="0" rect-visible="true" fill-color="#e1e1e1">
+<schema name="bank_schema" layers="0" rect-visible="true" fill-color="#e1e1e1" name-color="#000000">
 </schema>
 
 <table name="clients" layers="0" collapse-mode="2" max-obj-count="31" z-value="0">
 	<schema name="bank_schema"/>
-	<position x="460" y="100"/>
+	<position x="420" y="140"/>
 	<column name="id" not-null="true">
-		<type name="serial" length="0"/>
+		<type name="uuid" length="0"/>
 	</column>
 	<column name="first_name" not-null="true">
 		<type name="varchar" length="0"/>
@@ -111,32 +112,34 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="deposits" layers="0" collapse-mode="2" max-obj-count="10" z-value="0">
+<table name="deposits" layers="0" collapse-mode="2" max-obj-count="12" z-value="0">
 	<schema name="bank_schema"/>
-	<role name="postgres"/>
-	<position x="980" y="100"/>
+	<position x="940" y="140"/>
 	<column name="id" not-null="true">
 		<type name="uuid" length="0"/>
 	</column>
-	<column name="deposit_type" not-null="true">
+	<column name="category" not-null="true">
 		<type name="varchar" length="0"/>
 	</column>
 	<column name="agreement_number" not-null="true">
 		<type name="varchar" length="0"/>
 	</column>
-	<column name="begin_date" not-null="true">
+	<column name="program_begin" not-null="true">
 		<type name="date" length="0"/>
 	</column>
-	<column name="end_date" not-null="true">
+	<column name="program_end" not-null="true">
 		<type name="date" length="0"/>
 	</column>
-	<column name="term_of_agreement" not-null="true">
+	<column name="agreement_begin" not-null="true">
 		<type name="date" length="0"/>
 	</column>
-	<column name="deposit_amount" not-null="true">
+	<column name="agreement_end" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="amount" not-null="true">
 		<type name="bigint" length="0"/>
 	</column>
-	<column name="deposit_interest" not-null="true">
+	<column name="interest" not-null="true">
 		<type name="smallint" length="0"/>
 	</column>
 	<constraint name="deposit_pk" type="pk-constr" table="bank_schema.deposits">
@@ -144,13 +147,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 
 	<customidxs object-type="column">
-		<object name="id_clients" index="8"/>
+		<object name="id_clients" index="9"/>
 	</customidxs>
-
 	<customidxs object-type="constraint">
 		<object name="clients_fk" index="1"/>
-	</customidxs>
-</table>
+	</customidxs></table>
 
 <relationship name="clients_has_many_deposits" type="rel1n" layers="0"
 	 src-col-pattern="{sc}_{st}"
@@ -167,13 +168,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 
 <table name="account" layers="0" collapse-mode="2" max-obj-count="10" z-value="0">
 	<schema name="bank_schema"/>
-	<role name="postgres"/>
-	<position x="1000" y="500"/>
+	<position x="780" y="580"/>
 	<column name="id" not-null="true">
 		<type name="uuid" length="0"/>
 	</column>
-	<column name="number" not-null="true">
-		<type name="varchar" length="0"/>
+	<column name="id_number" not-null="true">
+		<type name="bigint" length="0"/>
 	</column>
 	<column name="code" not-null="true">
 		<type name="smallint" length="0"/>
@@ -190,13 +190,19 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="balance" not-null="true">
 		<type name="bigint" length="0"/>
 	</column>
-	<column name="name">
+	<column name="note">
 		<type name="varchar" length="0"/>
 	</column>
 	<constraint name="account_pk" type="pk-constr" table="bank_schema.account">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
-</table>
+
+	<customidxs object-type="column">
+		<object name="id_deposits" index="8"/>
+	</customidxs>
+	<customidxs object-type="constraint">
+		<object name="deposits_fk" index="0"/>
+	</customidxs></table>
 
 <relationship name="deposits_has_many_account" type="rel1n" layers="0"
 	 src-col-pattern="{sc}_{st}"
@@ -205,6 +211,56 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 custom-color="#fa535c"
 	 src-table="bank_schema.deposits"
 	 dst-table="bank_schema.account"
-	 src-required="false" dst-required="false"/>
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="4.3316" y="-32.253"/>
+	</label>
+</relationship>
+
+<table name="transaction" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="bank_schema"/>
+	<role name="postgres"/>
+	<position x="1220" y="660"/>
+	<column name="id" not-null="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="src_account" not-null="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="dst_account" not-null="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="amount" not-null="true">
+		<type name="bigint" length="0"/>
+	</column>
+	<column name="txn_date" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<constraint name="transaction_pk" type="pk-constr" table="bank_schema.transaction">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="source_account_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="CASCADE" ref-table="bank_schema.account" table="bank_schema.transaction">
+	<columns names="src_account" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="destination_account_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="CASCADE" ref-table="bank_schema.account" table="bank_schema.transaction">
+	<columns names="dst_account" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_transaction_account" type="relfk" layers="0"
+	 src-table="bank_schema.transaction"
+	 dst-table="bank_schema.account" reference-fk="source_account_fk"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_transaction_account1" type="relfk" layers="0"
+	 src-table="bank_schema.transaction"
+	 dst-table="bank_schema.account" reference-fk="destination_account_fk"
+	 src-required="false" dst-required="true"/>
 
 </dbmodel>

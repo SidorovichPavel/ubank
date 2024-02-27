@@ -50,12 +50,23 @@ components_manager:
             throttling_enabled: false
             url_trailing_slash: strict-match
 
+        dns-client:
+            fs-task-processor: fs-task-processor
+
         #handler-hello:                    # Finally! Our handler.
         #    path: /v1/hello               # Registering handler by URL '/v1/hello'.
         #    method: POST                  # It will only reply to POST requests.
         #    task_processor: main-task-processor  # Run it on CPU bound task processor
 
-        #dev
+        # dev
+        postgres-db-1:
+            dbconnection: $dbconnection
+            blocking_task_processor: fs-task-processor
+            dns_resolver: async
+            sync-start: false
+            connlimit_mode: manual
+        
+        # client
         post-client:
             path: /api/client
             method: POST
@@ -76,12 +87,28 @@ components_manager:
             method: GET
             task_processor: main-task-processor
 
-        postgres-db-1:
-            dbconnection: $dbconnection
-            blocking_task_processor: fs-task-processor
-            dns_resolver: async
-            sync-start: false
-            connlimit_mode: manual
+        # deposit
 
-        dns-client:
-            fs-task-processor: fs-task-processor
+        post-deposit:
+            path: /api/client/{id}/deposit
+            method: POST
+            task_processor: main-task-processor
+
+        get-deposits:
+            path: /api/client/{id}/deposit
+            method: GET
+            task_processor: main-task-processor
+
+        get-deposit:
+            path: /api/client/{idc}/deposit/{idd}
+            method: GET
+            task_processor: main-task-processor
+
+        get-account-2:
+            path: /api/client/{idc}/deposit/{idd}/account/{ida}
+            method: GET
+            task_processor: main-task-processor
+
+        
+
+         
