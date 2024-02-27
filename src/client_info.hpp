@@ -53,7 +53,7 @@ userver::formats::json::Value Serialize(
     const ClientInfo& info,
     userver::formats::serialize::To<userver::formats::json::Value>);
 
-ClientInfo Deserialize(const userver::formats::json::Value& json);
+ClientInfo DeserializeClient(const userver::formats::json::Value& json);
 ClientInfo Deserialize(const userver::storages::postgres::Row& row);
 
 }  // namespace ubank

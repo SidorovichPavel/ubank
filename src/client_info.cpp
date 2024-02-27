@@ -98,7 +98,7 @@ auto get_mapped_field_data(const userver::formats::json::Value& json,
   return *opt;
 }
 
-ClientInfo Deserialize(const userver::formats::json::Value& json) {
+ClientInfo DeserializeClient(const userver::formats::json::Value& json) {
   return ClientInfo{
       boost::uuids::nil_generator{}(),
       json["first_name"].As<std::string>(),

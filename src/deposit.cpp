@@ -33,7 +33,7 @@ class HttpPostDeposit : public userver::server::handlers::HttpHandlerJsonBase {
       [[maybe_unused]] userver::server::request::RequestContext&
           request_context) const override {
     
-    Deposit deposit = Deserialize(json["deposit"]);
+    Deposit deposit = DeserializeDeposit(json["deposit"]);
 
     userver::formats::json::ValueBuilder json_builder;
     json_builder["deposit"] = deposit;

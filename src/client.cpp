@@ -43,7 +43,7 @@ class HttpPostClient : public userver::server::handlers::HttpHandlerJsonBase {
       const userver::server::http::HttpRequest& request,
       const userver::formats::json::Value& json,
       userver::server::request::RequestContext&) const override {
-    ClientInfo info = Deserialize(json["client"]);
+    ClientInfo info = DeserializeClient(json["client"]);
     info.id = boost::uuids::random_generator{}();
     userver::formats::json::ValueBuilder json_builder;
     try {
@@ -123,7 +123,7 @@ class HttpPutClient : public userver::server::handlers::HttpHandlerJsonBase {
       const userver::server::http::HttpRequest& request,
       const userver::formats::json::Value& json,
       userver::server::request::RequestContext&) const override {
-    auto info = Deserialize(json["client"]);
+    auto info = DeserializeClient(json["client"]);
     auto sid = request.GetPathArg("id");
     boost::uuids::uuid id;
     userver::formats::json::ValueBuilder json_builder;

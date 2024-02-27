@@ -29,7 +29,7 @@ userver::formats::json::Value Serialize(
   return json_builder.ExtractValue();
 }
 
-Deposit Deserialize(const userver::formats::json::Value& json) {
+Deposit DeserializeDeposit(const userver::formats::json::Value& json) {
   return Deposit{
       boost::uuids::nil_generator{}(),
       json["category"].As<std::string>(),

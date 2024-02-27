@@ -6,6 +6,7 @@
 
 #include <boost/uuid/uuid.hpp>
 
+#include <userver/formats/json.hpp>
 #include <userver/utils/datetime/date.hpp>
 
 namespace ubank {
@@ -29,7 +30,7 @@ userver::formats::json::Value Serialize(
     const Deposit& deposit,
     userver::formats::serialize::To<userver::formats::json::Value>);
 
-Deposit Deserialize(const userver::formats::json::Value& json);
+Deposit DeserializeDeposit(const userver::formats::json::Value& json);
 
 struct Account {
   boost::uuids::uuid id;   // string
