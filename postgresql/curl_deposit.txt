@@ -1,0 +1,15 @@
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{
+  "deposit": {
+    "category": "pavel",
+    "agreement_number": "genndevich",
+    "program_begin": "2024-02-21",
+    "program_end": "2024-02-22",
+    "agreement_begin": "2024-02-23",
+    "agreement_end": "2024-02-24",
+    "amount": 1000,
+    "interest": 4
+    }
+  }' \
+  http://localhost:8080/api/client/{id}/deposit
