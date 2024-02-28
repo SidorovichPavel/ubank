@@ -1,5 +1,5 @@
 -- Database generated with pgModeler (PostgreSQL Database Modeler).
--- pgModeler version: 1.0.6
+-- pgModeler version: 1.1.0
 -- PostgreSQL version: 12.0
 -- Project Site: pgmodeler.io
 -- Model Author: ---
@@ -14,7 +14,7 @@ CREATE DATABASE "ubank-db-1";
 
 
 -- object: bank_schema | type: SCHEMA --
--- DROP SCHEMA IF EXISTS bank_schema CASCADE;
+DROP SCHEMA IF EXISTS bank_schema CASCADE;
 CREATE SCHEMA bank_schema;
 -- ddl-end --
 
@@ -22,7 +22,7 @@ SET search_path TO pg_catalog,public,bank_schema;
 -- ddl-end --
 
 -- object: bank_schema.clients | type: TABLE --
--- DROP TABLE IF EXISTS bank_schema.clients CASCADE;
+DROP TABLE IF EXISTS bank_schema.clients CASCADE;
 CREATE TABLE bank_schema.clients (
 	id uuid NOT NULL,
 	first_name varchar NOT NULL,
@@ -62,7 +62,6 @@ CREATE TABLE bank_schema.deposits (
 	id uuid NOT NULL,
 	category varchar NOT NULL,
 	agreement_number varchar NOT NULL,
-	currency smallint NOT NULL,
 	program_begin date NOT NULL,
 	program_end date NOT NULL,
 	agreement_begin date NOT NULL,
@@ -70,6 +69,8 @@ CREATE TABLE bank_schema.deposits (
 	amount bigint NOT NULL,
 	interest smallint NOT NULL,
 	id_clients uuid,
+	id_main_accounts uuid,
+	id_sec_accounts uuid,
 	CONSTRAINT deposit_pk PRIMARY KEY (id)
 );
 -- ddl-end --
@@ -81,9 +82,9 @@ REFERENCES bank_schema.clients (id) MATCH FULL
 ON DELETE SET NULL ON UPDATE CASCADE;
 -- ddl-end --
 
--- object: bank_schema.account | type: TABLE --
-DROP TABLE IF EXISTS bank_schema.account CASCADE;
-CREATE TABLE bank_schema.account (
+-- object: bank_schema.accounts | type: TABLE --
+DROP TABLE IF EXISTS bank_schema.accounts CASCADE;
+CREATE TABLE bank_schema.accounts (
 	id uuid NOT NULL,
 	id_number bigint NOT NULL,
 	code smallint NOT NULL,
@@ -92,16 +93,48 @@ CREATE TABLE bank_schema.account (
 	credit bigint NOT NULL,
 	balance bigint NOT NULL,
 	note varchar,
-	id_deposits uuid,
 	CONSTRAINT account_pk PRIMARY KEY (id)
 );
 -- ddl-end --
 
--- object: deposits_fk | type: CONSTRAINT --
-ALTER TABLE bank_schema.account DROP CONSTRAINT IF EXISTS deposits_fk CASCADE;
-ALTER TABLE bank_schema.account ADD CONSTRAINT deposits_fk FOREIGN KEY (id_deposits)
-REFERENCES bank_schema.deposits (id) MATCH FULL
-ON DELETE SET NULL ON UPDATE CASCADE;
+-- object: bank_schema.transactions | type: TABLE --
+DROP TABLE IF EXISTS bank_schema.transactions CASCADE;
+CREATE TABLE bank_schema.transactions (
+	id uuid NOT NULL,
+	src_account uuid NOT NULL,
+	dst_account uuid NOT NULL,
+	amount bigint NOT NULL,
+	txn_date date NOT NULL,
+	CONSTRAINT transaction_pk PRIMARY KEY (id)
+);
+-- ddl-end --
+
+-- object: main_account_fk | type: CONSTRAINT --
+ALTER TABLE bank_schema.deposits DROP CONSTRAINT IF EXISTS main_account_fk CASCADE;
+ALTER TABLE bank_schema.deposits ADD CONSTRAINT main_account_fk FOREIGN KEY (id_main_accounts)
+REFERENCES bank_schema.accounts (id) MATCH SIMPLE
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: sec_account_fk | type: CONSTRAINT --
+ALTER TABLE bank_schema.deposits DROP CONSTRAINT IF EXISTS sec_account_fk CASCADE;
+ALTER TABLE bank_schema.deposits ADD CONSTRAINT sec_account_fk FOREIGN KEY (id_sec_accounts)
+REFERENCES bank_schema.accounts (id) MATCH SIMPLE
+ON DELETE CASCADE ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: source_account_fk | type: CONSTRAINT --
+ALTER TABLE bank_schema.transactions DROP CONSTRAINT IF EXISTS source_account_fk CASCADE;
+ALTER TABLE bank_schema.transactions ADD CONSTRAINT source_account_fk FOREIGN KEY (src_account)
+REFERENCES bank_schema.accounts (id) MATCH SIMPLE
+ON DELETE CASCADE ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: destination_account_fk | type: CONSTRAINT --
+ALTER TABLE bank_schema.transactions DROP CONSTRAINT IF EXISTS destination_account_fk CASCADE;
+ALTER TABLE bank_schema.transactions ADD CONSTRAINT destination_account_fk FOREIGN KEY (dst_account)
+REFERENCES bank_schema.accounts (id) MATCH SIMPLE
+ON DELETE CASCADE ON UPDATE NO ACTION;
 -- ddl-end --
 
 
