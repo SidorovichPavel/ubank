@@ -90,12 +90,12 @@ components_manager:
         # deposit
 
         post-deposit:
-            path: /api/client/{id}/deposit
+            path: /api/client/{idc}/deposit
             method: POST
             task_processor: main-task-processor
 
         get-deposits:
-            path: /api/client/{id}/deposit
+            path: /api/client/{idc}/deposit
             method: GET
             task_processor: main-task-processor
 
