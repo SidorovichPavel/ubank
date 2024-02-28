@@ -5,6 +5,9 @@
 #include <userver/formats/json.hpp>
 #include <userver/formats/serialize/boost_uuid.hpp>
 #include <userver/formats/serialize/common_containers.hpp>
+#include <userver/storages/postgres/io/date.hpp>
+#include <userver/storages/postgres/io/optional.hpp>
+#include <userver/storages/postgres/io/uuid.hpp>
 #include <userver/utils/datetime.hpp>
 #include <userver/utils/datetime/date.hpp>
 
@@ -30,31 +33,33 @@ userver::formats::json::Value Serialize(
 }
 
 Deposit DeserializeDeposit(const userver::formats::json::Value& json) {
-  return Deposit{
-      boost::uuids::nil_generator{}(),
-      json["category"].As<std::string>(),
-      json["agreement_number"].As<std::string>(),
-      userver::utils::datetime::DateFromRFC3339String(
-          userver::utils::datetime::Timestring(
-              std::chrono::system_clock::from_time_t(
-                  json["agreement_begin"].As<std::int64_t>()))),
-      userver::utils::datetime::DateFromRFC3339String(
-          userver::utils::datetime::Timestring(
-              std::chrono::system_clock::from_time_t(
-                  json["agreement_begin"].As<std::int64_t>()))),
-      userver::utils::datetime::DateFromRFC3339String(
-          userver::utils::datetime::Timestring(
-              std::chrono::system_clock::from_time_t(
-                  json["agreement_begin"].As<std::int64_t>()))),
-      userver::utils::datetime::DateFromRFC3339String(
-          userver::utils::datetime::Timestring(
-              std::chrono::system_clock::from_time_t(
-                  json["agreement_begin"].As<std::int64_t>()))),
-      json["amount"].As<std::int64_t>(),
-      json["interest"].As<std::int16_t>(),
-      boost::uuids::nil_generator{}(),
-      boost::uuids::nil_generator{}(),
-      boost::uuids::string_generator{}(json["id_clients"].As<std::string>())};
+  return Deposit{boost::uuids::nil_generator{}(),
+                 json["category"].As<std::string>(),
+                 json["agreement_number"].As<std::string>(),
+                 json["program_begin"].As<userver::utils::datetime::Date>(),
+                 json["program_end"].As<userver::utils::datetime::Date>(),
+                 json["agreement_begin"].As<userver::utils::datetime::Date>(),
+                 json["agreement_end"].As<userver::utils::datetime::Date>(),
+                 json["amount"].As<std::int64_t>(),
+                 json["interest"].As<std::int16_t>(),
+                 boost::uuids::nil_generator{}(),
+                 boost::uuids::nil_generator{}(),
+                 boost::uuids::nil_generator{}()};
+}
+
+Deposit DeserializeDeposit(const userver::storages::postgres::Row& row) {
+  return Deposit{row["id"].As<boost::uuids::uuid>(),
+                 row["category"].As<std::string>(),
+                 row["agreement_number"].As<std::string>(),
+                 row["program_begin"].As<userver::utils::datetime::Date>(),
+                 row["program_end"].As<userver::utils::datetime::Date>(),
+                 row["agreement_begin"].As<userver::utils::datetime::Date>(),
+                 row["agreement_end"].As<userver::utils::datetime::Date>(),
+                 row["amount"].As<std::int64_t>(),
+                 row["interest"].As<std::int16_t>(),
+                 row["id_clients"].As<boost::uuids::uuid>(),
+                 row["id_main_accounts"].As<boost::uuids::uuid>(),
+                 row["id_sec_accounts"].As<boost::uuids::uuid>()};
 }
 
 userver::formats::json::Value Serialize(
@@ -69,7 +74,6 @@ userver::formats::json::Value Serialize(
   json_builder["credit"] = account.credit;
   json_builder["balance"] = account.balance;
   json_builder["note"] = account.note;
-  json_builder["id_deposits"] = account.id_deposits;
   return json_builder.ExtractValue();
 }
 
@@ -83,6 +87,17 @@ userver::formats::json::Value Serialize(
   json_builder["amount"] = tnx.amount;
   json_builder["txn_date"] = tnx.txn_date;
   return json_builder.ExtractValue();
+}
+
+Account DeserializeAccount(const userver::storages::postgres::Row& row) {
+  return Account{row["id"].As<boost::uuids::uuid>(),
+                 row["id_number"].As<std::int64_t>(),
+                 row["code"].As<std::int16_t>(),
+                 row["activity"].As<std::string>(),
+                 row["debit"].As<std::int64_t>(),
+                 row["debit"].As<std::int64_t>(),
+                 row["debit"].As<std::int64_t>(),
+                 row["note"].As<std::optional<std::string>>()};
 }
 
 }  // namespace ubank

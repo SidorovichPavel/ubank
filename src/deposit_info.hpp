@@ -8,6 +8,8 @@
 
 #include <userver/formats/json.hpp>
 #include <userver/utils/datetime/date.hpp>
+#include <userver/storages/postgres/database.hpp>
+#include <userver/storages/postgres/cluster.hpp>
 
 namespace ubank {
 
@@ -21,9 +23,9 @@ struct Deposit {
   userver::utils::datetime::Date agreement_end;
   std::int64_t amount;
   std::int16_t interest;
+  boost::uuids::uuid id_clients;  // will be changed to string/uuid
   boost::uuids::uuid id_main_accounts;
   boost::uuids::uuid id_sec_accounts;
-  boost::uuids::uuid id_clients;  // will be changed to string/uuid
 };
 
 userver::formats::json::Value Serialize(
@@ -31,6 +33,7 @@ userver::formats::json::Value Serialize(
     userver::formats::serialize::To<userver::formats::json::Value>);
 
 Deposit DeserializeDeposit(const userver::formats::json::Value& json);
+Deposit DeserializeDeposit(const userver::storages::postgres::Row& row);
 
 struct Account {
   boost::uuids::uuid id;   // string
@@ -41,12 +44,13 @@ struct Account {
   std::int64_t credit;
   std::int64_t balance;
   std::optional<std::string> note;
-  boost::uuids::uuid id_deposits;
 };
 
 userver::formats::json::Value Serialize(
     const Account& account,
     userver::formats::serialize::To<userver::formats::json::Value>);
+
+Account DeserializeAccount(const userver::storages::postgres::Row& row);
 
 struct Transaction {
   boost::uuids::uuid id;
