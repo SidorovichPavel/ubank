@@ -4,7 +4,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
 <dbmodel pgmodeler-ver="1.1.0" use-changelog="false" max-obj-count="4"
-	 last-position="0,0" last-zoom="1" scene-rect="0,0,1680.2,1076.8"
+	 last-position="0,111" last-zoom="1" scene-rect="0,0,1680.2,1076.8"
 	 default-schema="public" default-owner="postgres"
 	 layers="Default layer"
 	 active-layers="0"
@@ -112,7 +112,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="deposits" layers="0" collapse-mode="2" max-obj-count="12" z-value="0">
+<table name="deposits" layers="0" collapse-mode="2" max-obj-count="14" z-value="0">
 	<schema name="bank_schema"/>
 	<position x="940" y="140"/>
 	<column name="id" not-null="true">
@@ -142,6 +142,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="interest" not-null="true">
 		<type name="smallint" length="0"/>
 	</column>
+	<column name="id_main_accounts">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="id_sec_accounts">
+		<type name="uuid" length="0"/>
+	</column>
 	<constraint name="deposit_pk" type="pk-constr" table="bank_schema.deposits">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
@@ -166,9 +172,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</label>
 </relationship>
 
-<table name="account" layers="0" collapse-mode="2" max-obj-count="10" z-value="0">
+<table name="accounts" layers="0" collapse-mode="2" max-obj-count="9" z-value="0">
 	<schema name="bank_schema"/>
-	<position x="780" y="580"/>
+	<position x="840" y="680"/>
 	<column name="id" not-null="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -193,31 +199,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="note">
 		<type name="varchar" length="0"/>
 	</column>
-	<constraint name="account_pk" type="pk-constr" table="bank_schema.account">
+	<constraint name="account_pk" type="pk-constr" table="bank_schema.accounts">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
+</table>
 
-	<customidxs object-type="column">
-		<object name="id_deposits" index="8"/>
-	</customidxs>
-	<customidxs object-type="constraint">
-		<object name="deposits_fk" index="0"/>
-	</customidxs></table>
-
-<relationship name="deposits_has_many_account" type="rel1n" layers="0"
-	 src-col-pattern="{sc}_{st}"
-	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
-	 src-fk-pattern="{st}_fk"
-	 custom-color="#fa535c"
-	 src-table="bank_schema.deposits"
-	 dst-table="bank_schema.account"
-	 src-required="false" dst-required="false">
-	<label ref-type="name-label">
-		<position x="4.3316" y="-32.253"/>
-	</label>
-</relationship>
-
-<table name="transaction" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+<table name="transactions" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
 	<schema name="bank_schema"/>
 	<role name="postgres"/>
 	<position x="1220" y="660"/>
@@ -236,31 +223,61 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="txn_date" not-null="true">
 		<type name="date" length="0"/>
 	</column>
-	<constraint name="transaction_pk" type="pk-constr" table="bank_schema.transaction">
+	<constraint name="transaction_pk" type="pk-constr" table="bank_schema.transactions">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
+<constraint name="main_account_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="CASCADE" del-action="CASCADE" ref-table="bank_schema.accounts" table="bank_schema.deposits">
+	<columns names="id_main_accounts" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="sec_account_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="CASCADE" del-action="CASCADE" ref-table="bank_schema.accounts" table="bank_schema.deposits">
+	<columns names="id_sec_accounts" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
 <constraint name="source_account_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
-	 upd-action="NO ACTION" del-action="CASCADE" ref-table="bank_schema.account" table="bank_schema.transaction">
+	 upd-action="NO ACTION" del-action="CASCADE" ref-table="bank_schema.accounts" table="bank_schema.transactions">
 	<columns names="src_account" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="destination_account_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
-	 upd-action="NO ACTION" del-action="CASCADE" ref-table="bank_schema.account" table="bank_schema.transaction">
+	 upd-action="NO ACTION" del-action="CASCADE" ref-table="bank_schema.accounts" table="bank_schema.transactions">
 	<columns names="dst_account" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <relationship name="rel_transaction_account" type="relfk" layers="0"
-	 src-table="bank_schema.transaction"
-	 dst-table="bank_schema.account" reference-fk="source_account_fk"
+	 src-table="bank_schema.transactions"
+	 dst-table="bank_schema.accounts" reference-fk="source_account_fk"
 	 src-required="false" dst-required="true"/>
 
 <relationship name="rel_transaction_account1" type="relfk" layers="0"
-	 src-table="bank_schema.transaction"
-	 dst-table="bank_schema.account" reference-fk="destination_account_fk"
+	 src-table="bank_schema.transactions"
+	 dst-table="bank_schema.accounts" reference-fk="destination_account_fk"
 	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_deposits_account" type="relfk" layers="0"
+	 src-table="bank_schema.deposits"
+	 dst-table="bank_schema.accounts" reference-fk="main_account_fk"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="-43.5241" y="0.84701"/>
+	</label>
+</relationship>
+
+<relationship name="rel_deposits_account1" type="relfk" layers="0"
+	 src-table="bank_schema.deposits"
+	 dst-table="bank_schema.accounts" reference-fk="sec_account_fk"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="53.382" y="-19.153"/>
+	</label>
+</relationship>
 
 </dbmodel>
